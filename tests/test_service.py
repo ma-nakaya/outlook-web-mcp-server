@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import pytest
@@ -40,7 +41,9 @@ def _message(email_id: str = "mail-1") -> dict[str, object]:
         "ItemId": {"Id": email_id, "ChangeKey": "mail-key"},
         "Subject": "Quarterly update",
         "From": {"Mailbox": {"Name": "Example Sender", "EmailAddress": "sender@example.com"}},
-        "DateTimeReceived": "2026-08-04T01:02:03Z",
+        # Relative to now: search_emails filters out messages older than
+        # days_back, so a fixed date turns this fixture into a time bomb.
+        "DateTimeReceived": (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "IsRead": False,
         "HasAttachments": True,
         "Preview": "short preview",
